@@ -1,3 +1,4 @@
+<!-- {% raw %} -->
 # Laboratorio 02 — CRUD Full-Stack con Laravel y MySQL
 
 **Curso:** Desarrollo de aplicaciones para ambientes Web Avanzado  
@@ -1566,3 +1567,5 @@ TaskFlow (Laravel 13)
 ---
 
 **Fin del laboratorio 02.** Las instrucciones se han preparado para una aplicación Laravel 13; la validación final de comportamiento debe realizarla el alumno/instructor ejecutando el laboratorio completo en su máquina con MySQL 8.4.
+
+<!-- {% endraw %} -->

@@ -1,3 +1,4 @@
+<!-- {% raw %} -->
 # Laboratorio 01 — Fundamentos de Laravel y desarrollo full-stack
 
 **Curso:** Desarrollo de aplicaciones para ambientes Web Avanzado  
@@ -1032,3 +1033,5 @@ En el capítulo 2 se **continuará este mismo proyecto**, sin instalar otro Lara
 ---
 
 **Fin del laboratorio 01.** El alumno debe conservar su aplicación y su rama Git para la continuidad de TaskFlow en el laboratorio 02.
+
+<!-- {% endraw %} -->

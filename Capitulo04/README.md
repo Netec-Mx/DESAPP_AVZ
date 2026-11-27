@@ -1,3 +1,4 @@
+<!-- {% raw %} -->
 # Laboratorio 04 — Seguridad web esencial en TaskFlow
 
 **Curso:** Desarrollo de aplicaciones para ambientes Web Avanzado  
@@ -1395,3 +1396,5 @@ TaskFlow (Laravel 13)
 ---
 
 **Fin del laboratorio 04.** Esta guía documenta los procedimientos y el código para que el alumno los realice manualmente. **No incluye ningún proyecto preconstruido ni reemplaza una ejecución integral en Laravel/MySQL**. Durante la validación del instructor registre las incidencias reales y los cambios necesarios en el Markdown.
+
+<!-- {% endraw %} -->

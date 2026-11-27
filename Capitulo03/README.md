@@ -1,3 +1,4 @@
+<!-- {% raw %} -->
 # Laboratorio 03 — Autenticación básica y roles en TaskFlow
 
 **Curso:** Desarrollo de aplicaciones para ambientes Web Avanzado  
@@ -1511,3 +1512,5 @@ TaskFlow (Laravel 13)
 ---
 
 **Fin del laboratorio 03.** Este material proporciona los comandos y los archivos necesarios para ejecutar la práctica, pero **no sustituye una ejecución real de extremo a extremo** en un equipo con Laravel 13, MySQL y Breeze instalados. Documente cualquier incidencia encontrada durante la validación del instructor.
+
+<!-- {% endraw %} -->

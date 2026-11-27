@@ -1,3 +1,4 @@
+<!-- {% raw %} -->
 # Laboratorio 06 — Integración full-stack con Blade, Vite e introducción a Inertia
 
 **Curso:** Desarrollo de aplicaciones para ambientes Web Avanzado  
@@ -1280,3 +1281,5 @@ Si no funciona, compruebe la versión exacta de los paquetes, el middleware `Han
 - [Vue 3 — Introducción](https://vuejs.org/guide/introduction.html).
 
 **Estado de verificación:** el documento indica los comandos y pruebas que ejecutará el alumno. El **funcionamiento completo en el entorno Laravel/MySQL del curso continúa pendiente de ejecución real**; una comprobación de sintaxis o de Markdown no equivale a una integración exitosa. El anexo de Inertia es opcional y también requiere prueba en el entorno del alumno.
+
+<!-- {% endraw %} -->

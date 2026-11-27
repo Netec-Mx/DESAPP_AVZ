@@ -1,3 +1,4 @@
+<!-- {% raw %} -->
 # Laboratorio 05 — Desarrollo y consumo de APIs REST con TaskFlow
 
 **Curso:** Desarrollo de aplicaciones para ambientes Web Avanzado  
@@ -1620,3 +1621,5 @@ TaskFlow (Laravel 13)
 - [MDN — Fetch API](https://developer.mozilla.org/es/docs/Web/API/Fetch_API/Using_Fetch)
 
 **Estado de la guía:** contiene el procedimiento y los fragmentos completos que el estudiante debe crear o modificar. La verificación de sintaxis **no sustituye** la ejecución integral con Laravel 13, MySQL, Sanctum y navegador. El instructor debe registrar los resultados de la primera ejecución antes de declarar validado el laboratorio en producción educativa.
+
+<!-- {% endraw %} -->
