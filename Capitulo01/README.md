@@ -1,5 +1,5 @@
-<!-- {% raw %} -->
 # Laboratorio 01 — Fundamentos de Laravel y desarrollo full-stack
+<!-- {% raw %} -->
 
 **Curso:** Desarrollo de aplicaciones para ambientes Web Avanzado  
 **Capítulo:** 1. Introducción a Laravel (PHP, Python) + Fundamentos Full-Stack  

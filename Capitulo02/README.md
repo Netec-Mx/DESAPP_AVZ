@@ -1,5 +1,5 @@
-<!-- {% raw %} -->
 # Laboratorio 02 — CRUD Full-Stack con Laravel y MySQL
+<!-- {% raw %} -->
 
 **Curso:** Desarrollo de aplicaciones para ambientes Web Avanzado  
 **Capítulo:** 2. Laravel (PHP, Python) + MySQL: CRUD Full-Stack  

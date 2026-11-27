@@ -1,5 +1,5 @@
-<!-- {% raw %} -->
 # Laboratorio 04 — Seguridad web esencial en TaskFlow
+<!-- {% raw %} -->
 
 **Curso:** Desarrollo de aplicaciones para ambientes Web Avanzado  
 **Capítulo:** 4. Seguridad Web Esencial en Laravel (PHP, Python)  

@@ -1,5 +1,5 @@
-<!-- {% raw %} -->
 # Laboratorio 06 — Integración full-stack con Blade, Vite e introducción a Inertia
+<!-- {% raw %} -->
 
 **Curso:** Desarrollo de aplicaciones para ambientes Web Avanzado  
 **Capítulo:** 6. Fullstack con Blade y Vite  

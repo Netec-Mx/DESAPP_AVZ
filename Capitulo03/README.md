@@ -1,5 +1,5 @@
-<!-- {% raw %} -->
 # Laboratorio 03 — Autenticación básica y roles en TaskFlow
+<!-- {% raw %} -->
 
 **Curso:** Desarrollo de aplicaciones para ambientes Web Avanzado  
 **Capítulo:** 3. Autenticación Básica y Roles  
