@@ -8,7 +8,7 @@
 
 Te damos la bienvenida a la **plataforma de laboratorios** del curso **Desarrollo de aplicaciones para ambientes Web Avanzado**. Aquí podrás explorar diferentes tecnologías a través de prácticas guiadas. ¡Desarrolla tus habilidades y lleva tus conocimientos al siguiente nivel!
 
-Durante los laboratorios construirás progresivamente **TaskFlow**, una aplicación de gestión de tareas con PHP, Laravel, MySQL, Blade, Tailwind CSS y JavaScript. Cada laboratorio parte del resultado del anterior, por lo que deben realizarse en orden. Antes de comenzar, revisa la [Guía de configuración del entorno](SETUP_GUIDE.md).
+Durante los laboratorios construirás progresivamente **TaskFlow**, una aplicación de gestión de tareas con PHP, Laravel, MySQL, Blade, Tailwind CSS y JavaScript. Cada laboratorio parte del resultado del anterior, por lo que deben realizarse en orden.
 
 ## Lista de laboratorios
 
