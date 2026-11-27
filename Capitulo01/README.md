@@ -1,679 +1,1034 @@
-# 7 Práctica: Fundamentos de Laravel 13.x y desarrollo full-stack con PHP 8.5.x, Composer 2.10.3+, Node.js 24.21.0 LTS, npm 11.x, Vite y Tailwind CSS 4.x
+# Laboratorio 01 — Fundamentos de Laravel y desarrollo full-stack
 
-## Metadatos
+**Curso:** Desarrollo de aplicaciones para ambientes Web Avanzado  
+**Capítulo:** 1. Introducción a Laravel (PHP, Python) + Fundamentos Full-Stack  
+**Práctica oficial:** 1.7  
+**Duración:** 180 minutos (3 horas)  
+**Proyecto conductor:** **TaskFlow**, gestor de tareas  
+**Entorno de referencia:** terminal Bash en Ubuntu o distribución Linux similar; Visual Studio Code; navegador actualizado  
+**Stack:** Laravel 13, PHP 8.3 o superior, Composer 2, Node.js 24 LTS, Vite y Tailwind CSS 4
 
-| Atributo | Detalle |
-| :--- | :--- |
-| **Duración** | 180 minutos |
-| **Complejidad** | Fácil |
-| **Nivel de Bloom** | Crear |
-
----
-
-## Descripción General
-
-En este laboratorio práctico, el estudiante inicializará desde cero la estructura del proyecto web de pila completa (full-stack) denominado **TaskFlow**. Se empleará el gestor de dependencias Composer para estructurar la base del backend sobre el framework Laravel 13.0.0 en conjunto con PHP 8.5.0. 
-
-Para la interfaz de usuario, se configurará la herramienta de compilación y empaquetado Vite 6.0.5 junto con el nuevo motor de estilos CSS Tailwind CSS 4.0.0. Al finalizar este laboratorio, el estudiante habrá establecido un flujo de enrutamiento web dinámico que conecta la lógica de un controlador (`TaskViewController`) con vistas modulares estructuradas mediante plantillas y componentes reutilizables de Blade. Este proyecto servirá como base incremental para el desarrollo de las arquitecturas híbridas y los mecanismos de seguridad que se verán en las sesiones posteriores.
+> **Importante:** Este documento es el laboratorio completo. El alumno **creará los archivos y ejecutará los comandos** siguiendo las instrucciones. No se necesita descargar un proyecto base ni copiar un ZIP. En este primer laboratorio **no se implementan MySQL, Eloquent, autenticación, CRUD persistente ni servicios de IA**. Estos elementos corresponden a capítulos posteriores.
 
 ---
 
-## Objetivos de Aprendizaje
+## 1. Objetivo y resultado final
 
-Al finalizar este laboratorio, serás capaz de:
-- [ ] Inicializar un proyecto estructurado en Laravel 13.0.0 y configurar su entorno de ejecución local (`.env`) y control de versiones con Git.
-- [ ] Configurar el pipeline de compilación de assets de frontend utilizando Vite 6.0.5 y la arquitectura nativa de plugins de Tailwind CSS 4.0.0.
-- [ ] Crear rutas web semánticas y asociarlas a un controlador dedicado para gestionar la transferencia de colecciones de datos estructurados.
-- [ ] Diseñar una interfaz de usuario limpia y responsiva empleando layouts maestros de Blade y componentes parametrizables de frontend.
-- [ ] Validar la integridad del enrutamiento y la renderización visual mediante pruebas automatizadas con PHPUnit/Pest.
+Construir una primera versión funcional de **TaskFlow** que muestre dos tareas de ejemplo almacenadas temporalmente en un arreglo PHP, permita navegar desde el listado al detalle de cada tarea, utilice vistas y componentes Blade reutilizables y aplique estilos de Tailwind CSS mediante Vite.
 
----
+## Diagrama
 
-## Prerrequisitos
+![alt text](image.png)
 
-Para completar este laboratorio con éxito, se requiere:
-1. **Conocimientos Previos**:
-   - Comprensión intermedia de PHP (sintaxis estructurada, arreglos asociativos y programación orientada a objetos).
-   - Dominio básico de comandos de terminal Unix/Linux (gestión de directorios y procesos).
-   - Fundamentos de maquetado HTML5, CSS3 moderno y enrutamiento en aplicaciones web.
+Al finalizar, el alumno podrá:
 
-2. **Herramientas de Asistencia y Licenciamiento**:
-   - En caso de utilizar herramientas de asistencia de desarrollo basadas en IA durante la práctica:
-     * **GitHub Copilot / Copilot Chat**: Requiere una licencia activa corporativa o individual. Se debe configurar el archivo `.copilotignore` en la raíz del proyecto para evitar la indexación innecesaria del directorio `vendor/` o `node_modules/`, optimizando la precisión de las sugerencias.
-     * **Microsoft 365 Copilot**: No requerido para la codificación directa, pero puede utilizarse para estructurar la documentación técnica del entregable bajo licencia comercial institucional.
+- [ ] Identificar las responsabilidades de rutas, controlador y vistas en Laravel.
+- [ ] Crear un proyecto Laravel 13 y comprobar sus requisitos.
+- [ ] Registrar rutas web con nombres y parámetros.
+- [ ] Crear `TareaController` con los métodos `index()` y `show()`.
+- [ ] Crear un layout Blade y vistas para listado y detalle.
+- [ ] Reutilizar componentes Blade de clase y anónimos, con atributos y slots.
+- [ ] Compilar Tailwind CSS 4 utilizando Vite.
+- [ ] Ejecutar pruebas automatizadas sin depender de MySQL ni del servidor de Vite.
+- [ ] Guardar el avance en una rama Git reutilizable en el laboratorio 2.
 
----
+### Distribución sugerida de los 180 minutos
 
-## Entorno de Laboratorio
-
-El laboratorio debe ser ejecutado en una estación de trabajo que cumpla con las especificaciones de hardware y software listadas a continuación.
-
-### Requisitos de Hardware
-- **Procesador**: Arquitectura x86_64 o ARM64 (Apple Silicon) con un mínimo de 4 núcleos físicos.
-- **Memoria RAM**: Mínimo de 8 GB (Recomendado 16 GB para garantizar la ejecución paralela del servidor de desarrollo de Laravel y el compilador de Vite).
-- **Almacenamiento**: Unidad de Estado Sólido (SSD) con al menos 20 GB de espacio libre en disco.
-
-### Requisitos de Software
-
-| Software | Versión Requerida | URL de Descarga Oficial |
-| :--- | :--- | :--- |
-| **PHP (CLI)** | 8.5.0 | [https://www.php.net/downloads](https://www.php.net/downloads) |
-| **Composer** | 2.10.3 | [https://getcomposer.org/download/](https://getcomposer.org/download/) |
-| **Node.js** | 24.21.0 LTS | [https://nodejs.org/](https://nodejs.org/) |
-| **npm** | 11.1.0 | [https://www.npmjs.com/](https://www.npmjs.com/) |
-| **MySQL Community Server** | 8.4.0 | [https://dev.mysql.com/downloads/mysql/](https://dev.mysql.com/downloads/mysql/) |
-| **SQLite (CLI)** | 3.45.3 | [https://www.sqlite.org/download.html](https://www.sqlite.org/download.html) |
-| **Git** | 2.43.0+ | [https://git-scm.com/downloads](https://git-scm.com/downloads) |
-
-### Parámetros Globales del Proyecto
-- **Directorio de trabajo**: `~/labs/taskflow-app`
-- **Puerto de desarrollo Laravel**: HTTP `8000` (`http://localhost:8000`)
-- **Puerto de desarrollo Vite**: HTTP `5173` (`http://localhost:5173`)
-- **Puerto de base de datos MySQL**: TCP `3306`
-- **Constantes de Entorno Predefinidas**:
-  - `DB_DATABASE`: `taskflow_db`
-  - `DB_USERNAME`: `taskflow_user`
-  - `DB_PASSWORD`: `TaskFlowSecure2026!`
+| Etapa | Actividad | Minutos |
+|---|---|---:|
+| 1 | Revisar requisitos e instalar el proyecto | 20 |
+| 2 | Configurar `.env`, Git y reconocer estructura | 15 |
+| 3 | Configurar y verificar Vite + Tailwind CSS 4 | 25 |
+| 4 | Explorar rutas web y crear el controlador | 30 |
+| 5 | Crear layout y vistas Blade | 30 |
+| 6 | Construir componentes Blade reutilizables | 30 |
+| 7 | Probar, validar y resolver errores | 25 |
+| 8 | Guardar evidencias y commit final | 5 |
+| **Total** | | **180** |
 
 ---
 
-## Instrucciones Paso a Paso
+## 2. Preparación del entorno
 
-### Paso 1: Inicialización del Proyecto Laravel 13.0.0 y Configuración de Git
+### Paso 0.1 — Verificar herramientas
 
-**Objetivo**: Crear la estructura física de la aplicación empleando Composer, inicializar el control de versiones local de Git bajo una rama de desarrollo estandarizada y ajustar los parámetros del entorno de desarrollo.
+Abra una terminal de Ubuntu y ejecute, **uno por uno**:
 
-**Instrucciones**:
-
-1. Abra una ventana de terminal y navegue al directorio donde alojará sus proyectos de laboratorio. Si no existe la carpeta `~/labs`, créela:
-   ```bash
-   mkdir -p ~/labs
-   cd ~/labs
-   ```
-
-2. Ejecute el comando de Composer para descargar el instalador e inicializar un nuevo proyecto limpio de Laravel 13.0.0 bajo el directorio `taskflow-app`:
-   ```bash
-   composer create-project laravel/laravel:^13.0 taskflow-app
-   ```
-
-3. Una vez finalizada la instalación de dependencias de PHP, ingrese al directorio del proyecto:
-   ```bash
-   cd taskflow-app
-   ```
-
-4. Inicialice un repositorio Git local, configure la identidad del autor si es la primera vez y cree una rama independiente llamada `lab-01-fundamentos`:
-   ```bash
-   git init
-   git branch -M main
-   git checkout -b lab-01-fundamentos
-   ```
-
-5. Copie el archivo de configuración de entorno para preparar la persistencia y la configuración del servidor:
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-
-6. Abra el archivo `.env` en su editor de código preferido y actualice las variables de conexión a la base de datos para alinearlas con las constantes del curso:
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=taskflow_db
-   DB_USERNAME=taskflow_user
-   DB_PASSWORD=TaskFlowSecure2026!
-   ```
-
-**Resultado Esperado**:
-Un directorio estructurado de Laravel con un repositorio Git local en la rama `lab-01-fundamentos` y un archivo `.env` configurado con las credenciales de base de datos relacionales estipuladas.
-
-**Verificación**:
-Ejecute el siguiente comando para comprobar el estado de Git y la versión instalada de Laravel:
 ```bash
-git status
+php -v
+composer --version
+node -v
+npm -v
+git --version
+```
+
+**Requisitos:**
+
+- PHP **8.3 o posterior**. Para este curso también puede utilizar PHP 8.5 si está instalado y es compatible con las dependencias.
+- Composer **2.x**.
+- Node.js **24 LTS** recomendado para trabajar con la versión de Vite incluida en Laravel 13.
+- npm y Git disponibles.
+- Editor recomendado: Visual Studio Code.
+
+Revise las extensiones PHP principales:
+
+```bash
+php -m
+```
+
+Compruebe que aparecen, entre otras, `openssl`, `pdo`, `mbstring`, `xml`, `ctype`, `fileinfo` y `tokenizer`. Las dependencias exactas también serán validadas por Composer.
+
+**Resultado esperado:** todos los comandos muestran una versión válida. Si alguno indica `command not found`, instale esa herramienta **antes** de continuar.
+
+**No instale Python ni MySQL para esta práctica.** Python puede integrarse como un servicio externo, pero la implementación de IA se reserva para el capítulo 7.
+
+### Paso 0.2 — Preparar la carpeta de trabajo
+
+```bash
+mkdir -p ~/labs
+cd ~/labs
+pwd
+```
+
+**Resultado esperado:** la terminal muestra una ruta similar a `/home/usuario/labs`.
+
+---
+
+## 3. Crear y configurar TaskFlow
+
+### Paso 1.1 — Crear un proyecto Laravel 13
+
+Desde `~/labs`, ejecute:
+
+```bash
+composer create-project laravel/laravel taskflow "^13.0"
+cd taskflow
 php artisan --version
 ```
-La terminal debe retornar que se encuentra en la rama `lab-01-fundamentos` y que la versión del framework corresponde a `Laravel Framework 13.0.0` (o la subversión de parche disponible más reciente de la rama 13).
 
----
+> Si ya existe `~/labs/taskflow` porque realizó la práctica antes, **no ejecute de nuevo** `create-project` encima de esa carpeta. Entre al proyecto existente y compruebe su estado antes de seguir.
 
-### Paso 2: Integración y Configuración de Vite 6.0.5 y Tailwind CSS 4.0.0
+**Resultado esperado:** se crea `~/labs/taskflow`; `php artisan --version` muestra `Laravel Framework 13.x`.
 
-**Objetivo**: Instalar, configurar e integrar Tailwind CSS versión 4 en la canalización de compilación de frontend de Vite. Esta versión de Tailwind CSS elimina el uso del archivo de configuración tradicional (`tailwind.config.js`) y se apoya directamente en un plugin nativo de Vite y en directivas de importación CSS.
+**Verificación:**
 
-**Instrucciones**:
-
-1. Instale las dependencias de Node.js necesarias en el proyecto, incluyendo las versiones exactas de Tailwind CSS 4.0.0 y su plugin oficial para Vite:
-   ```bash
-   npm install --save-dev tailwindcss@4.0.0 @tailwindcss/vite@4.0.0
-   ```
-
-2. Abra el archivo de configuración de Vite `vite.config.js` en la raíz del proyecto. Reemplace su contenido para importar e inicializar el plugin de Tailwind CSS 4.0.0:
-   ```javascript
-   // filepath: ~/labs/taskflow-app/vite.config.js
-   import { defineConfig } from 'vite';
-   import laravel from 'laravel-vite-plugin';
-   import tailwindcss from '@tailwindcss/vite';
-
-   export default defineConfig({
-       plugins: [
-           laravel({
-               input: ['resources/css/app.css', 'resources/js/app.js'],
-               refresh: true,
-           }),
-           tailwindcss(),
-       ],
-       server: {
-           host: 'localhost',
-           port: 5173,
-       }
-   });
-   ```
-
-3. Abra el archivo CSS principal de la aplicación ubicado en `resources/css/app.css` y reemplace todas las líneas existentes por la directiva de importación directa de Tailwind v4:
-   ```css
-   /* filepath: ~/labs/taskflow-app/resources/css/app.css */
-   @import "tailwindcss";
-   ```
-
-4. Verifique que la sección de scripts del archivo `package.json` contenga las tareas de desarrollo y compilación de Vite:
-   ```json
-   "scripts": {
-       "dev": "vite",
-       "build": "vite build"
-   }
-   ```
-
-**Resultado Esperado**:
-El motor de compilación Vite configurado para procesar estilos de Tailwind CSS 4 sin necesidad de archivos de configuración pesados independientes de JavaScript.
-
-**Verificación**:
-Ejecute el compilador en modo de desarrollo:
 ```bash
-npm run dev
+pwd
+ls -la
+ls app routes resources public tests
 ```
-La terminal debe indicar que el servidor de desarrollo de Vite está escuchando activamente en `http://localhost:5173/` y que ha cargado de manera correcta el archivo `resources/css/app.css`. Detenga el proceso temporalmente con `Ctrl + C` para continuar los pasos.
+
+Identifique las carpetas:
+
+| Carpeta o archivo | Para qué se utiliza |
+|---|---|
+| `app/Http/Controllers/` | Controladores que responden a solicitudes. |
+| `routes/web.php` | Rutas destinadas a la interfaz web. |
+| `resources/views/` | Plantillas Blade. |
+| `resources/css/app.css` | Estilos que procesará Vite. |
+| `resources/js/app.js` | Entrada de JavaScript para Vite. |
+| `vite.config.js` | Configuración del proceso de compilación frontend. |
+| `.env` | Configuración local; no debe subirse al repositorio. |
+| `tests/Feature/` | Pruebas que verifican comportamiento HTTP. |
+
+**Nota:** la instalación predeterminada de Laravel puede traer configuración o un archivo SQLite. **No lo utilizaremos** en este laboratorio: nuestros datos se definirán en arreglos PHP.
+
+### Paso 1.2 — Preparar la configuración local sin base de datos
+
+Compruebe si existe `.env`:
+
+```bash
+ls -la .env .env.example
+```
+
+Si **no existe** `.env`, cópielo del ejemplo:
+
+```bash
+cp .env.example .env
+```
+
+Abra `.env` con VS Code:
+
+```bash
+code .env
+```
+
+Verifique o ajuste **únicamente** estas claves; conserve las demás variables generadas por Laravel:
+
+```dotenv
+APP_NAME=TaskFlow
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://127.0.0.1:8000
+
+SESSION_DRIVER=file
+CACHE_STORE=file
+QUEUE_CONNECTION=sync
+```
+
+**Qué significa:** las sesiones y la caché se guardarán en archivos, no en una tabla MySQL; las tareas de este laboratorio estarán en un arreglo del controlador.
+
+Si `APP_KEY` está vacía, genere una clave segura:
+
+```bash
+php artisan key:generate
+```
+
+Limpie la configuración cargada previamente:
+
+```bash
+php artisan config:clear
+```
+
+**No invente `APP_KEY`. No coloque credenciales MySQL. No ejecute `php artisan migrate` en el laboratorio 1.**
+
+### Paso 1.3 — Preparar una rama Git
+
+Desde la raíz `~/labs/taskflow`, ejecute:
+
+```bash
+git init
+git switch -c lab-01-fundamentos
+git branch --show-current
+git status --short
+```
+
+Si la rama `lab-01-fundamentos` ya existe, utilice `git switch lab-01-fundamentos` en lugar de crearla otra vez.
+
+**Resultado esperado:** la rama activa se llama `lab-01-fundamentos`.
+
+Compruebe que los archivos sensibles y dependencias estén ignorados por Git:
+
+```bash
+git check-ignore .env
+git check-ignore node_modules
+```
+
+**Resultado esperado:** aparecen `.env` y `node_modules` como rutas ignoradas. Si no sucede, revise `.gitignore` **antes** de hacer el commit.
 
 ---
 
-### Paso 3: Creación de Rutas y el Controlador TaskViewController
+## 4. Integrar Tailwind CSS 4 con Vite
 
-**Objetivo**: Generar un controlador de Laravel que retorne datos estructurados hacia una vista HTML, y registrar las rutas web correspondientes en la aplicación.
+### Paso 2.1 — Instalar las dependencias frontend declaradas por Laravel 13
 
-**Instrucciones**:
+```bash
+npm install
+npm ls vite laravel-vite-plugin tailwindcss @tailwindcss/vite --depth=0
+```
 
-1. Genere un controlador vacío con nombre `TaskViewController` utilizando el comando Artisan CLI:
-   ```bash
-   php artisan make:controller TaskViewController
-   ```
+El esqueleto actual de Laravel 13 normalmente **ya incluye** Vite, Tailwind CSS 4 y el plugin de Tailwind. Si ambos paquetes de Tailwind están instalados, **no los reinstale**.
 
-2. Abra el archivo del controlador recién creado en `app/Http/Controllers/TaskViewController.php`. Implemente el método `index()` para simular la recuperación de tareas desde la base de datos a través de una colección estática estructurada en un arreglo asociativo:
-   ```php
-   <?php
-   // filepath: ~/labs/taskflow-app/app/Http/Controllers/TaskViewController.php
+**Solo si falta** `tailwindcss` o `@tailwindcss/vite`:
 
-   namespace App\Http\Controllers;
+```bash
+npm install --save-dev "tailwindcss@^4" "@tailwindcss/vite@^4"
+```
 
-   use Illuminate\Http\Request;
+> No fije Vite en `6.0.5` ni instale versiones alfa de Tailwind: el esqueleto Laravel 13 utiliza versiones más recientes y compatibles. Mantenga las versiones que resuelva `npm install` a partir de `package.json` y `package-lock.json`.
 
-   class TaskViewController extends Controller
-   {
-       /**
-        * Muestra la lista principal de tareas de la aplicación.
-        */
-       public function index()
-       {
-           // Estructura simulada de tareas obtenidas de la persistencia
-           $tasks = [
-               [
-                   'id' => 1,
-                   'title' => 'Configurar Entorno de Desarrollo',
-                   'description' => 'Instalar PHP 8.5.0, Composer 2.10.3 y Node.js para arrancar el proyecto.',
-                   'priority' => 'Alta',
-                   'status' => 'Completada',
-                   'due_date' => '2026-03-01'
-               ],
-               [
-                   'id' => 2,
-                   'title' => 'Integrar Tailwind CSS 4.0.0',
-                   'description' => 'Configurar el plugin nativo de Vite 6 para compilar estilos modernos.',
-                   'priority' => 'Alta',
-                   'status' => 'En Progreso',
-                   'due_date' => '2026-03-05'
-               ],
-               [
-                   'id' => 3,
-                   'title' => 'Crear Componentes de Blade',
-                   'description' => 'Desarrollar componentes reutilizables para tarjetas y botones con diseño limpio.',
-                   'priority' => 'Media',
-                   'status' => 'Pendiente',
-                   'due_date' => '2026-03-10'
-               ],
-               [
-                   'id' => 4,
-                   'title' => 'Implementar Pruebas con Pest',
-                   'description' => 'Validar el renderizado correcto de la vista y la respuesta del servidor.',
-                   'priority' => 'Baja',
-                   'status' => 'Pendiente',
-                   'due_date' => '2026-03-15'
-               ]
-           ];
+### Paso 2.2 — Revisar `vite.config.js`
 
-           return view('tasks.index', compact('tasks'));
-       }
-   }
-   ```
+Abra `vite.config.js`:
 
-3. Abra el archivo de enrutamiento web ubicado en `routes/web.php`. Reemplace las rutas por defecto para mapear la raíz de la aplicación directamente al controlador `TaskViewController`:
-   ```php
-   <?php
-   // filepath: ~/labs/taskflow-app/routes/web.php
+```bash
+code vite.config.js
+```
 
-   use Illuminate\Support\Facades\Route;
-   use App\Http\Controllers\TaskViewController;
+Compruebe que se utiliza el plugin de Laravel y el de Tailwind. Si su archivo ya tiene la misma configuración funcional, **consérvelo**; si falta la integración, déjelo así:
 
-   // Redirigir la raíz de la plataforma a la vista de tareas controlada
-   Route::get('/', [TaskViewController::class, 'index'])->name('tasks.index');
-   ```
+```javascript
+// Archivo: vite.config.js
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+import tailwindcss from '@tailwindcss/vite';
 
-**Resultado Esperado**:
-Un enrutador que mapea las solicitudes web de la raíz del dominio hacia el controlador `TaskViewController`, el cual expone un conjunto de registros de prueba (tareas) estructurados en un formato de datos robusto.
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/js/app.js'],
+            refresh: true,
+        }),
+        tailwindcss(),
+    ],
+});
+```
 
-**Verificación**:
-Para verificar que las rutas se registraron correctamente, ejecute:
+**Verificación:** las entradas `resources/css/app.css` y `resources/js/app.js` deben existir.
+
+```bash
+ls resources/css/app.css resources/js/app.js
+```
+
+Si falta `resources/js/app.js`, créelo desde VS Code con contenido mínimo válido:
+
+```javascript
+// Archivo: resources/js/app.js
+console.log('TaskFlow: frontend cargado');
+```
+
+### Paso 2.3 — Configurar los estilos
+
+Abra `resources/css/app.css` y compruebe que contenga esta importación de Tailwind CSS 4:
+
+```css
+/* Archivo: resources/css/app.css */
+@import "tailwindcss";
+```
+
+Para este laboratorio basta con esa importación; no se necesitan `tailwind.config.js`, `postcss.config.js` ni directivas antiguas como `@tailwind base`.
+
+**Si el CSS generado contiene otras reglas útiles de Laravel, no hace falta borrarlas:** únicamente garantice que la importación y el plugin de Tailwind estén correctamente configurados.
+
+### Paso 2.4 — Comprobar la compilación
+
+```bash
+npm run build
+```
+
+**Resultado esperado:** Vite finaliza sin errores y genera los recursos compilados bajo `public/build/`.
+
+```bash
+ls public/build/manifest.json
+```
+
+Si el archivo existe, la compilación fue correcta. Todavía no es necesario iniciar el navegador.
+
+---
+
+## 5. Primer contacto con las rutas web
+
+### Paso 3.1 — Crear dos rutas de exploración temporales
+
+Abra `routes/web.php` y, **solo para comprobar la sintaxis de rutas**, deje este contenido:
+
+```php
+<?php
+// Archivo: routes/web.php (versión temporal de exploración)
+
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', fn () => 'TaskFlow está funcionando');
+
+Route::get('/saludo', fn () => 'Hola desde Laravel 13');
+
+Route::get('/tareas/ejemplo/{id}', function (int $id) {
+    return "Tarea de prueba #{$id}";
+})->whereNumber('id');
+```
+
+**Observe:** `Route::get()` registra una petición GET; `{id}` recibe el parámetro; `whereNumber('id')` acepta únicamente identificadores numéricos.
+
+### Paso 3.2 — Verificar las rutas desde Artisan
+
 ```bash
 php artisan route:list
 ```
-El listado debe contener una fila con el URI `/` apuntando al método `App\Http\Controllers\TaskViewController@index` utilizando el método HTTP `GET`.
+
+**Resultado esperado:** deben aparecer las rutas `/`, `/saludo` y `/tareas/ejemplo/{id}` con método GET/HEAD.
+
+Abra una **terminal 1**, desde `~/labs/taskflow`:
+
+```bash
+php artisan serve --host=127.0.0.1 --port=8000
+```
+
+En su navegador visite:
+
+- `http://127.0.0.1:8000/`
+- `http://127.0.0.1:8000/saludo`
+- `http://127.0.0.1:8000/tareas/ejemplo/2`
+- `http://127.0.0.1:8000/tareas/ejemplo/abc`
+
+**Resultado esperado:** las tres primeras URL devuelven texto; la última devuelve HTTP **404** porque `abc` no es numérico.
+
+> **Estas rutas son temporales.** En el paso 4.2 reemplazará `routes/web.php` por las rutas definitivas de TaskFlow. No mezcle ambos listados de rutas.
 
 ---
 
-### Paso 4: Creación del Layout Maestro (Blade Layout) con Tailwind CSS 4
+## 6. Crear el controlador y las vistas Blade
 
-**Objetivo**: Diseñar una plantilla base (layout) utilizando el motor de plantillas Blade de Laravel que encapsule la cabecera HTML común, cargue los activos de Vite y declare el contenedor principal donde se insertarán las vistas hijas.
+### Paso 4.1 — Generar `TareaController`
 
-**Instrucciones**:
+En otra terminal, desde el directorio del proyecto:
 
-1. Cree los directorios requeridos para organizar las vistas del sistema dentro del directorio de recursos:
-   ```bash
-   mkdir -p resources/views/layouts
-   mkdir -p resources/views/components
-   mkdir -p resources/views/tasks
-   ```
-
-2. Cree un nuevo archivo de plantilla para el layout maestro en `resources/views/layouts/app.blade.php`:
-   ```html
-   <!-- filepath: ~/labs/taskflow-app/resources/views/layouts/app.blade.php -->
-   <!DOCTYPE html>
-   <html lang="es" class="h-full bg-slate-50">
-   <head>
-       <meta charset="UTF-8">
-       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       <title>@yield('title', 'TaskFlow - Gestor de Tareas')</title>
-       
-       <!-- Inyección de assets procesados por Vite -->
-       @vite(['resources/css/app.css', 'resources/js/app.js'])
-   </head>
-   <body class="flex flex-col min-h-screen text-slate-900 font-sans antialiased">
-       <!-- Barra de Navegación Común -->
-       <nav class="bg-white border-b border-slate-200">
-           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-               <div class="flex justify-between h-16">
-                   <div class="flex items-center">
-                       <div class="flex-shrink-0 flex items-center">
-                           <span class="text-xl font-black text-indigo-600 tracking-wider">TASKFLOW</span>
-                           <span class="ml-2 px-2 py-0.5 text-xs font-semibold bg-slate-100 text-slate-700 rounded-full">v1.0</span>
-                       </div>
-                       <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                           <a href="{{ route('tasks.index') }}" class="border-indigo-500 text-slate-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                               Panel de Tareas
-                           </a>
-                       </div>
-                   </div>
-                   <div class="flex items-center space-x-2">
-                       <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                       <span class="text-xs font-semibold text-slate-500">Servidor Activo (PHP 8.5)</span>
-                   </div>
-               </div>
-           </div>
-       </nav>
-
-       <!-- Contenido Dinámico de la Vista -->
-       <main class="flex-grow">
-           <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-               @yield('content')
-           </div>
-       </main>
-
-       <!-- Pie de Página -->
-       <footer class="bg-white border-t border-slate-200 py-6">
-           <div class="max-w-7xl mx-auto px-4 text-center sm:px-6 lg:px-8">
-               <p class="text-sm text-slate-500">
-                   &copy; {{ date('Y') }} TaskFlow. Desarrollado con Laravel 13 y Tailwind CSS 4.0.0.
-               </p>
-           </div>
-       </footer>
-   </body>
-   </html>
-   ```
-
-**Resultado Esperado**:
-Un archivo de plantilla estructurado de forma semántica con slots dinámicos (`@yield`) listos para recibir el contenido de vistas específicas y la directiva de inyección de recursos `@vite` configurada.
-
-**Verificación**:
-Inspeccione el contenido del archivo `resources/views/layouts/app.blade.php` con un lector del sistema para asegurar la correcta sintaxis de las directivas Blade:
 ```bash
-cat resources/views/layouts/app.blade.php | grep -E '(@yield|@vite)'
-```
-Debe retornar las líneas que contienen `@yield('title'...)`, `@vite(...)` y `@yield('content')`.
-
----
-
-### Paso 5: Diseño de Vistas de Tareas y Componentes Blade
-
-**Objetivo**: Crear componentes Blade modulares y reutilizables (un componente de botón y una tarjeta de tareas) consumiendo los estilos de Tailwind v4, e implementar la vista principal de la lista de tareas.
-
-**Instrucciones**:
-
-1. Cree un componente reutilizable para botones de acción en `resources/views/components/button.blade.php`. Este componente aceptará parámetros de variante de color:
-   ```html
-   <!-- filepath: ~/labs/taskflow-app/resources/views/components/button.blade.php -->
-   @props([
-       'variant' => 'primary'
-   ])
-
-   @php
-       $classes = 'inline-flex items-center px-4 py-2 border text-sm font-semibold rounded-lg shadow-xs focus:outline-hidden focus:ring-2 focus:ring-offset-2 transition-all duration-150 ';
-       
-       $variants = [
-           'primary' => 'border-transparent text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500',
-           'secondary' => 'border-slate-300 text-slate-700 bg-white hover:bg-slate-50 focus:ring-slate-500',
-           'danger' => 'border-transparent text-white bg-rose-600 hover:bg-rose-700 focus:ring-rose-500'
-       ];
-
-       $classes .= $variants[$variant] ?? $variants['primary'];
-   @endphp
-
-   <button {{ $attributes->merge(['class' => $classes]) }}>
-       {{ $slot }}
-   </button>
-   ```
-
-2. Cree un componente para representar visualmente cada tarea en `resources/views/components/task-card.blade.php`. Este componente recibirá como propiedad un arreglo asociativo `$task`:
-   ```html
-   <!-- filepath: ~/labs/taskflow-app/resources/views/components/task-card.blade.php -->
-   @props(['task'])
-
-   @php
-       // Mapeo de estilos según la prioridad
-       $priorityClasses = [
-           'Alta' => 'bg-rose-50 text-rose-700 border-rose-200',
-           'Media' => 'bg-amber-50 text-amber-700 border-amber-200',
-           'Baja' => 'bg-sky-50 text-sky-700 border-sky-200',
-       ];
-       $priorityStyle = $priorityClasses[$task['priority']] ?? 'bg-slate-50 text-slate-700 border-slate-200';
-
-       // Mapeo de estilos según el estado
-       $statusClasses = [
-           'Completada' => 'bg-emerald-100 text-emerald-800',
-           'En Progreso' => 'bg-blue-100 text-blue-800',
-           'Pendiente' => 'bg-slate-100 text-slate-800',
-       ];
-       $statusStyle = $statusClasses[$task['status']] ?? 'bg-slate-100 text-slate-800';
-   @endphp
-
-   <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-xs hover:shadow-md transition-shadow duration-200 flex flex-col justify-between">
-       <div>
-           <div class="flex items-center justify-between mb-4">
-               <span class="px-2.5 py-1 text-xs font-bold border rounded-md {{ $priorityStyle }}">
-                   Prioridad: {{ $task['priority'] }}
-               </span>
-               <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full {{ $statusStyle }}">
-                   {{ $task['status'] }}
-               </span>
-           </div>
-
-           <h3 class="text-lg font-bold text-slate-800 line-clamp-1 mb-2">
-               {{ $task['title'] }}
-           </h3>
-           <p class="text-sm text-slate-600 line-clamp-3 mb-4">
-               {{ $task['description'] }}
-           </p>
-       </div>
-
-       <div class="border-t border-slate-100 pt-4 mt-auto">
-           <div class="flex items-center justify-between text-xs text-slate-500 mb-4">
-               <span>Fecha Límite:</span>
-               <span class="font-medium text-slate-700">{{ $task['due_date'] }}</span>
-           </div>
-           
-           <div class="flex space-x-2">
-               <x-button variant="secondary" class="flex-1 justify-center py-1.5 text-xs">
-                   Editar
-               </x-button>
-               <x-button variant="primary" class="flex-1 justify-center py-1.5 text-xs">
-                   Completar
-               </x-button>
-           </div>
-       </div>
-   </div>
-   ```
-
-3. Cree la plantilla principal del listado de tareas en `resources/views/tasks/index.blade.php`. Esta plantilla heredará la estructura del layout maestro, iterará la colección de tareas y las inyectará en los componentes correspondientes:
-   ```html
-   <!-- filepath: ~/labs/taskflow-app/resources/views/tasks/index.blade.php -->
-   @extends('layouts.app')
-
-   @section('title', 'Panel de Control de Tareas - TaskFlow')
-
-   @section('content')
-   <div class="space-y-8">
-       <!-- Cabecera de Sección -->
-       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-           <div>
-               <h1 class="text-3xl font-black text-slate-900 tracking-tight">Panel de Tareas</h1>
-               <p class="mt-1 text-sm text-slate-600">
-                   Monitorea y organiza tu flujo de trabajo diario de manera ágil.
-               </p>
-           </div>
-           <div>
-               <x-button variant="primary" class="shadow-sm">
-                   <svg class="w-5 h-5 mr-2 -ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                   </svg>
-                   Nueva Tarea
-               </x-button>
-           </div>
-       </div>
-
-       <!-- Cuadrícula de Tareas -->
-       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-           @forelse($tasks as $task)
-               <x-task-card :task="$task" />
-           @empty
-               <div class="col-span-full bg-white border border-dashed border-slate-300 rounded-xl p-12 text-center">
-                   <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                   </svg>
-                   <h3 class="mt-2 text-sm font-medium text-slate-900">No se encontraron tareas</h3>
-                   <p class="mt-1 text-sm text-slate-500">Comienza creando un elemento para ver tus pendientes.</p>
-               </div>
-           @endforelse
-       </div>
-   </div>
-   @endsection
-   ```
-
-**Resultado Esperado**:
-Una vista completamente modularizada construida bajo el paradigma de componentes Blade y renderizada sobre un layout maestro que integra de forma nativa los estilos de Tailwind CSS v4.
-
-**Verificación**:
-Asegúrese de que todos los archivos requeridos para el paso se hayan guardado en los directorios correctos:
-```bash
-ls resources/views/layouts/
-ls resources/views/components/
-ls resources/views/tasks/
-```
-Deben visualizarse los archivos: `app.blade.php`, `button.blade.php`, `task-card.blade.php` e `index.blade.php`.
-
----
-
-## Validación y Pruebas
-
-Para garantizar que la aplicación responde correctamente bajo los estándares del framework y valida de forma robusta la transferencia de datos y la seguridad contra ataques XSS, se implementará un conjunto de pruebas automatizadas mediante el motor integrado PHPUnit.
-
-### 1. Creación del Archivo de Pruebas
-Ejecute el generador de pruebas de Laravel para crear un caso de prueba funcional sobre las vistas de tareas:
-```bash
-php artisan make:test TaskViewTest
+php artisan make:controller TareaController
 ```
 
-Modifique el archivo generado en `tests/Feature/TaskViewTest.php` para validar los comportamientos descritos en el script de abajo:
+Abra `app/Http/Controllers/TareaController.php` y reemplace su contenido por:
+
 ```php
 <?php
-// filepath: ~/labs/taskflow-app/tests/Feature/TaskViewTest.php
+// Archivo: app/Http/Controllers/TareaController.php
+
+namespace App\Http\Controllers;
+
+use Illuminate\View\View;
+
+class TareaController extends Controller
+{
+    // Datos temporales: en el laboratorio 2 se reemplazarán por Eloquent.
+    private const TAREAS = [
+        1 => [
+            'id' => 1,
+            'titulo' => 'Preparar informe',
+            'descripcion' => 'Redactar propuesta.',
+            'estado' => 'Pendiente',
+        ],
+        2 => [
+            'id' => 2,
+            'titulo' => 'Revisar UI',
+            'descripcion' => 'Validar pantallas Blade.',
+            'estado' => 'En progreso',
+        ],
+    ];
+
+    public function index(): View
+    {
+        $tareas = array_values(self::TAREAS);
+
+        return view('tareas.index', compact('tareas'));
+    }
+
+    public function show(int $id): View
+    {
+        $tarea = self::TAREAS[$id] ?? null;
+
+        abort_if($tarea === null, 404);
+
+        return view('tareas.show', compact('tarea'));
+    }
+}
+```
+
+**Qué debe comprender:**
+
+- `index()` prepara la lista de tareas para la vista `tareas.index`.
+- `show()` busca una tarea mediante su identificador y devuelve `404` cuando no existe.
+- `view()` envía variables al motor Blade.
+- El arreglo no se guarda en una base de datos: los cambios persistentes llegarán en el laboratorio 2.
+
+**Verificación de sintaxis PHP:**
+
+```bash
+php -l app/Http/Controllers/TareaController.php
+```
+
+Debe indicar `No syntax errors detected`.
+
+### Paso 4.2 — Definir las rutas definitivas de TaskFlow
+
+**Reemplace por completo** el ejemplo temporal de `routes/web.php` por:
+
+```php
+<?php
+// Archivo: routes/web.php (versión definitiva del laboratorio)
+
+use App\Http\Controllers\TareaController;
+use Illuminate\Support\Facades\Route;
+
+// La raíz también presenta el listado, para facilitar la navegación.
+Route::get('/', [TareaController::class, 'index']);
+
+Route::get('/tareas', [TareaController::class, 'index'])
+    ->name('tareas.index');
+
+Route::get('/tareas/{id}', [TareaController::class, 'show'])
+    ->whereNumber('id')
+    ->name('tareas.show');
+```
+
+Compruebe las rutas:
+
+```bash
+php artisan route:list --path=tareas
+```
+
+**Resultado esperado:** aparecen `/tareas` y `/tareas/{id}`. Las rutas `/saludo` y `/tareas/ejemplo/{id}` ya no deben aparecer.
+
+### Paso 4.3 — Crear las carpetas de vistas
+
+```bash
+mkdir -p resources/views/layouts
+mkdir -p resources/views/tareas
+mkdir -p resources/views/components
+```
+
+### Paso 4.4 — Crear el layout maestro
+
+Cree `resources/views/layouts/app.blade.php` con este contenido completo:
+
+```blade
+{{-- Archivo: resources/views/layouts/app.blade.php --}}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'TaskFlow')</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900">
+    <header class="border-b border-slate-200 bg-white">
+        <div class="mx-auto flex max-w-4xl items-center justify-between p-6">
+            <a href="{{ route('tareas.index') }}"
+               class="text-xl font-bold text-blue-900">TaskFlow</a>
+            <span class="text-sm text-slate-500">Laboratorio 01</span>
+        </div>
+    </header>
+
+    <main class="mx-auto max-w-4xl p-6">
+        @yield('content')
+    </main>
+</body>
+</html>
+```
+
+**Conceptos:** `@yield` define áreas reemplazables y `@vite` carga los archivos frontend procesados por Vite.
+
+### Paso 4.5 — Crear la vista inicial del listado
+
+Cree `resources/views/tareas/index.blade.php`:
+
+```blade
+{{-- Archivo: resources/views/tareas/index.blade.php --}}
+@extends('layouts.app')
+
+@section('title', 'Mis tareas - TaskFlow')
+
+@section('content')
+    <h1 class="mb-6 text-3xl font-bold text-blue-900">Mis tareas</h1>
+
+    <div class="grid gap-4 md:grid-cols-2">
+        @forelse ($tareas as $tarea)
+            <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <h2 class="text-lg font-semibold">{{ $tarea['titulo'] }}</h2>
+                <p class="mt-2 text-sm text-slate-600">{{ $tarea['estado'] }}</p>
+                <a class="mt-4 inline-block text-blue-700 underline"
+                   href="{{ route('tareas.show', $tarea['id']) }}">
+                    Ver detalle
+                </a>
+            </article>
+        @empty
+            <p class="text-slate-600">No hay tareas registradas.</p>
+        @endforelse
+    </div>
+@endsection
+```
+
+**Conceptos:** `@extends` reutiliza el layout; `@section` llena su contenido; `@forelse` muestra registros o un estado vacío; `{{ }}` escapa texto HTML.
+
+### Paso 4.6 — Crear la vista de detalle
+
+Cree `resources/views/tareas/show.blade.php`:
+
+```blade
+{{-- Archivo: resources/views/tareas/show.blade.php --}}
+@extends('layouts.app')
+
+@section('title', 'Detalle de tarea - TaskFlow')
+
+@section('content')
+    <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <a href="{{ route('tareas.index') }}" class="text-blue-700 underline">
+            Volver a tareas
+        </a>
+
+        <h1 class="mt-4 text-2xl font-bold">{{ $tarea['titulo'] }}</h1>
+        <p class="mt-4 text-slate-700">{{ $tarea['descripcion'] }}</p>
+        <p class="mt-3 text-sm font-medium">
+            Estado: {{ $tarea['estado'] }}
+        </p>
+    </article>
+@endsection
+```
+
+**Verificación parcial en navegador:** con `php artisan serve` activo, abra `http://127.0.0.1:8000/tareas`. Debe ver dos tarjetas. Seleccione **Ver detalle** en cada una; compruebe que las URL `/tareas/1` y `/tareas/2` muestran datos diferentes.
+
+Pruebe también `http://127.0.0.1:8000/tareas/999`: debe mostrar **404**, no un error 500.
+
+---
+
+## 7. Reutilizar componentes Blade
+
+### Paso 5.1 — Crear el componente de clase `TarjetaTarea`
+
+```bash
+php artisan make:component TarjetaTarea
+```
+
+Este comando debe generar:
+
+- `app/View/Components/TarjetaTarea.php`
+- `resources/views/components/tarjeta-tarea.blade.php`
+
+Abra `app/View/Components/TarjetaTarea.php` y **reemplace el archivo completo**:
+
+```php
+<?php
+// Archivo: app/View/Components/TarjetaTarea.php
+
+namespace App\View\Components;
+
+use Illuminate\View\Component;
+use Illuminate\View\View;
+
+class TarjetaTarea extends Component
+{
+    public function __construct(
+        public string $titulo,
+        public string $estado = 'Pendiente',
+        public string $descripcion = '',
+    ) {
+    }
+
+    public function colorEstado(): string
+    {
+        return match ($this->estado) {
+            'Completada' => 'bg-green-100 text-green-800',
+            'En progreso' => 'bg-blue-100 text-blue-800',
+            default => 'bg-amber-100 text-amber-800',
+        };
+    }
+
+    public function render(): View
+    {
+        return view('components.tarjeta-tarea');
+    }
+}
+```
+
+**Qué debe comprender:** el componente encapsula la presentación de una tarea. La función `colorEstado()` decide las clases CSS a partir del estado; los datos reales siguen proviniendo del controlador.
+
+### Paso 5.2 — Crear la vista del componente de clase
+
+Reemplace `resources/views/components/tarjeta-tarea.blade.php` por:
+
+```blade
+{{-- Archivo: resources/views/components/tarjeta-tarea.blade.php --}}
+<article {{ $attributes->class([
+    'flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-5 shadow-sm'
+]) }}>
+    <div>
+        <h2 class="text-lg font-bold">{{ $titulo }}</h2>
+
+        <span class="mt-3 inline-block rounded px-2 py-1 text-xs {{ $colorEstado() }}">
+            {{ $estado }}
+        </span>
+
+        <p class="mt-3 text-sm text-slate-700">{{ $descripcion }}</p>
+    </div>
+
+    @isset($acciones)
+        <div class="mt-4 border-t border-slate-100 pt-3">
+            {{ $acciones }}
+        </div>
+    @endisset
+</article>
+```
+
+**Conceptos:** `$attributes->class(...)` reúne las clases base y las clases externas; `$colorEstado()` invoca el método público del componente; `$acciones` es un **slot con nombre**.
+
+### Paso 5.3 — Crear el componente anónimo `alerta`
+
+En VS Code cree **manualmente** `resources/views/components/alerta.blade.php` con el siguiente contenido:
+
+```blade
+{{-- Archivo: resources/views/components/alerta.blade.php --}}
+@props(['tipo' => 'info'])
+
+@php
+    $estilos = match ($tipo) {
+        'exito' => 'border-green-500 bg-green-50 text-green-800',
+        'error' => 'border-red-500 bg-red-50 text-red-800',
+        default => 'border-blue-500 bg-blue-50 text-blue-800',
+    };
+@endphp
+
+<div {{ $attributes->merge([
+    'class' => "rounded border-l-4 p-4 {$estilos}",
+]) }} role="alert">
+    {{ $slot }}
+</div>
+```
+
+**Conceptos:** `@props` define los parámetros de un componente anónimo; `$slot` representa el contenido entre las etiquetas `<x-alerta>...</x-alerta>`; `merge()` concatena clases y **no elimina automáticamente clases Tailwind contradictorias**.
+
+### Paso 5.4 — Actualizar el listado para utilizar componentes
+
+**Reemplace por completo** `resources/views/tareas/index.blade.php` (la versión del paso 4.5 ya no será necesaria) por este contenido definitivo:
+
+```blade
+{{-- Archivo: resources/views/tareas/index.blade.php --}}
+@extends('layouts.app')
+
+@section('title', 'Mis tareas - TaskFlow')
+
+@section('content')
+    <h1 class="mb-6 text-3xl font-bold text-blue-900">Mis tareas</h1>
+
+    <x-alerta tipo="exito" class="mb-6">
+        TaskFlow está listo. Los datos de este laboratorio son temporales.
+    </x-alerta>
+
+    <div class="grid gap-4 md:grid-cols-2">
+        @forelse ($tareas as $tarea)
+            <x-tarjeta-tarea
+                :titulo="$tarea['titulo']"
+                :estado="$tarea['estado']"
+                :descripcion="$tarea['descripcion']">
+
+                <x-slot:acciones>
+                    <a class="text-blue-700 underline"
+                       href="{{ route('tareas.show', $tarea['id']) }}">
+                        Ver tarea
+                    </a>
+                </x-slot:acciones>
+            </x-tarjeta-tarea>
+        @empty
+            <p class="text-slate-600">No hay tareas registradas.</p>
+        @endforelse
+    </div>
+@endsection
+```
+
+**Verificación:** recargue `/tareas`. Deben aparecer una alerta, dos tarjetas con estados de diferente color y un enlace funcional por tarjeta. No debe aparecer el código Blade en la pantalla.
+
+### Paso 5.5 — Comprobar sintaxis y compilación de vistas
+
+```bash
+php -l app/Http/Controllers/TareaController.php
+php -l app/View/Components/TarjetaTarea.php
+php -l routes/web.php
+php artisan view:clear
+php artisan view:cache
+npm run build
+```
+
+**Resultado esperado:** los tres archivos PHP pasan la comprobación de sintaxis y las vistas Blade se compilan sin errores. `npm run build` debe terminar correctamente.
+
+> `php -l` comprueba **sintaxis**, no comportamiento. Las rutas, la navegación y las vistas se verificarán con pruebas HTTP en la siguiente sección.
+
+---
+
+## 8. Validación automática y pruebas en navegador
+
+### Paso 6.1 — Crear una prueba funcional
+
+```bash
+php artisan make:test TareaViewTest
+```
+
+Abra `tests/Feature/TareaViewTest.php` y reemplace su contenido por este código:
+
+```php
+<?php
+// Archivo: tests/Feature/TareaViewTest.php
 
 namespace Tests\Feature;
 
 use Tests\TestCase;
 
-class TaskViewTest extends TestCase
+class TareaViewTest extends TestCase
 {
-    /**
-     * Prueba que la ruta principal responde de forma exitosa y renderiza los componentes.
-     */
-    public function test_task_index_page_loads_successfully_and_contains_tasks(): void
+    protected function setUp(): void
     {
-        // 1. Ejecutar solicitud HTTP GET sobre la raíz
-        $response = $this->get('/');
+        parent::setUp();
 
-        // 2. Validar código de respuesta HTTP 200
-        $response->assertStatus(200);
-
-        // 3. Validar que se use la estructura del layout y vista correctos
-        $response->assertViewIs('tasks.index');
-
-        // 4. Asegurar que las variables de datos existan y contengan la información mockeada
-        $response->assertViewHas('tasks');
-
-        // 5. Verificar que el texto característico de la interfaz esté presente en el HTML compilado
-        $response->assertSee('Panel de Tareas');
-        $response->assertSee('Configurar Entorno de Desarrollo');
-        $response->assertSee('Integrar Tailwind CSS 4.0.0');
+        // Evita exigir un servidor Vite activo o un manifest durante PHPUnit.
+        $this->withoutVite();
     }
 
-    /**
-     * Prueba de seguridad (Adversarial XSS Case):
-     * Verifica que el motor Blade escape de forma nativa entradas de texto que simulen 
-     * inyecciones de código malicioso o scripts que busquen evadir el control.
-     */
-    public function test_blade_escapes_xss_attempts(): void
+    public function test_el_listado_muestra_las_dos_tareas(): void
     {
-        // Simulamos un valor de entrada cargado de un script de inyección malicioso
-        $xssPayload = '<script>alert("XSS Attack!");</script>';
-        
-        // El motor Blade renderiza variables usando {{ }} las cuales automáticamente aplican htmlspecialchars().
-        // Por ende, la etiqueta '<script>' debe transformarse en '&lt;script&gt;'
-        $escapedString = e($xssPayload);
+        $response = $this->get('/tareas');
 
-        $this->assertEquals('&lt;script&gt;alert(&quot;XSS Attack!&quot;);&lt;/script&gt;', $escapedString);
+        $response->assertOk();
+        $response->assertViewIs('tareas.index');
+        $response->assertViewHas('tareas');
+        $response->assertSee('Preparar informe');
+        $response->assertSee('Revisar UI');
+        $response->assertSee('Ver tarea');
+    }
+
+    public function test_la_raiz_muestra_el_listado(): void
+    {
+        $this->get('/')->assertOk();
+    }
+
+    public function test_el_detalle_muestra_una_tarea(): void
+    {
+        $response = $this->get('/tareas/1');
+
+        $response->assertOk();
+        $response->assertViewIs('tareas.show');
+        $response->assertSee('Preparar informe');
+        $response->assertSee('Redactar propuesta.');
+    }
+
+    public function test_una_tarea_inexistente_devuelve_404(): void
+    {
+        $this->get('/tareas/999')->assertNotFound();
+    }
+
+    public function test_blade_escapa_html_peligroso_en_la_vista_real(): void
+    {
+        $tarea = [
+            'id' => 3,
+            'titulo' => '<script>alert(1)</script>',
+            'descripcion' => 'Texto de prueba',
+            'estado' => 'Pendiente',
+        ];
+
+        $html = view('tareas.show', compact('tarea'))->render();
+
+        $this->assertStringContainsString(
+            '&lt;script&gt;alert(1)&lt;/script&gt;',
+            $html
+        );
+        $this->assertStringNotContainsString(
+            '<script>alert(1)</script>',
+            $html
+        );
     }
 }
 ```
 
-### 2. Ejecución de las Pruebas
-Ejecute la suite de pruebas del framework utilizando PHPUnit para validar que todo el código base pasa de manera correcta las pruebas:
+**Por qué es importante:** la última prueba verifica el **HTML generado por una vista Blade real**. No se limita a probar la función `e()` de forma aislada.
+
+### Paso 6.2 — Ejecutar la prueba
+
+```bash
+php artisan test --filter=TareaViewTest
+```
+
+**Resultado esperado:** **5 pruebas aprobadas**. El número de *assertions* dependerá de la versión de PHPUnit y de las comprobaciones internas; no es necesario que coincida con una captura exacta.
+
+Después, si lo desea, ejecute la suite general:
+
 ```bash
 php artisan test
 ```
 
-La salida en la terminal debe ser similar a la siguiente imagen de éxito:
-```text
-   PASS  Tests\Feature\TaskViewTest
-   ✓ task index page loads successfully and contains tasks                 0.18s
-   ✓ blade escapes xss attempts                                            0.01s
+Si falla alguna prueba, **lea primero el archivo y la línea que indica PHPUnit**. No continúe con el siguiente laboratorio sin corregir la causa.
 
-  Tests:    2 passed (2 assertions)
-  Duration: 0.28s
+### Paso 6.3 — Ejecutar el sistema completo en el navegador
+
+Abra dos terminales **desde `~/labs/taskflow`**.
+
+**Terminal A — Backend:**
+
+```bash
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-### 3. Prueba en Navegador
-Para realizar la prueba interactiva del sistema completo, levante en paralelo ambos servidores de desarrollo en consolas independientes:
+**Terminal B — Frontend:**
 
-- **Consola 1**: Servidor backend Laravel PHP
-  ```bash
-  php artisan serve --port=8000
-  ```
+```bash
+npm run dev
+```
 
-- **Consola 2**: Servidor de desarrollo Vite frontend
-  ```bash
-  npm run dev
-  ```
+Entre a `http://127.0.0.1:8000/tareas` y realice estas verificaciones:
 
-Abra su navegador web e ingrese a `http://localhost:8000`. Debe ver el panel de control de TaskFlow con un diseño limpio de color índigo y gris claro. Modifique el tamaño de la pantalla del navegador para observar la adaptabilidad del diseño (grid responsivo que colapsa de 4 columnas en monitores grandes a 1 sola columna en dispositivos móviles).
+| Prueba manual | Resultado esperado |
+|---|---|
+| Abrir `/tareas` | Dos tarjetas visibles y una alerta. |
+| Seleccionar **Ver tarea** en la primera | Se abre `/tareas/1` con su descripción. |
+| Seleccionar **Volver a tareas** | Regresa a `/tareas`. |
+| Abrir `/tareas/2` | Muestra la segunda tarea. |
+| Abrir `/tareas/999` | Devuelve una respuesta HTTP 404. |
+| Reducir el ancho del navegador | Las dos columnas pasan a una sola columna. |
+| Revisar el estilo del estado | `Pendiente` y `En progreso` tienen colores diferentes. |
 
----
+**Comprobación opcional desde terminal:**
 
-## Solución de Problemas
+```bash
+curl -I http://127.0.0.1:8000/tareas
+curl -I http://127.0.0.1:8000/tareas/999
+```
 
-A continuación, se listan dos problemas típicos y de alta probabilidad que pueden ocurrir al inicializar este tipo de infraestructuras junto con sus soluciones correspondientes.
-
-### Problema 1: Los estilos de Tailwind v4 no se aplican en el navegador (La página renderiza HTML puro)
-*   **Síntomas**: La página se visualiza con fuentes estándar del navegador (Times New Roman), sin colores de fondo, y los botones se amontonan de manera desordenada en la parte inferior izquierda de la pantalla.
-*   **Causa**: El servidor de desarrollo de Vite (`npm run dev`) no se está ejecutando en segundo plano, o falta la directiva nativa `@import "tailwindcss";` dentro del archivo `resources/css/app.css`, lo que impide que el plugin preprocese el archivo de estilos dinámicamente.
-*   **Solución**: 
-    1. Asegúrese de que el servidor de Vite se encuentre en ejecución abriendo una terminal nueva y ejecutando `npm run dev`.
-    2. Compruebe el contenido de `resources/css/app.css`. Debe tener únicamente `@import "tailwindcss";` y no las directivas de la versión 3.x (como `@tailwind base;`).
-    3. Verifique que la etiqueta `@vite` esté declarada en la sección `<head>` de `resources/views/layouts/app.blade.php`.
-
-### Problema 2: Error `Vite manifest not found` al abrir el navegador
-*   **Síntomas**: Al cargar la página `http://localhost:8000`, la aplicación web de Laravel muestra una pantalla de error de color rojo de Flare (el manejador de excepciones de Laravel) indicando que el archivo manifest no fue encontrado en la ruta de construcción de producción de la aplicación.
-*   **Causa**: Laravel está buscando el archivo de compilación estático generado en la carpeta `public/build` pero no se tiene un servidor activo de desarrollo (`npm run dev`) ni se ha ejecutado el comando de compilación estática.
-*   **Solución**: 
-    - **Para entorno de desarrollo (con recarga rápida)**: Mantenga una pestaña de terminal ejecutando `npm run dev`.
-    - **Para entorno de simulación de producción (sin servidor Vite activo)**: Genere la compilación estática de activos del frontend en el disco ejecutando la tarea de compilación en su consola:
-      ```bash
-      npm run build
-      ```
-      Este comando compila el CSS y JS minimizados en la ruta `public/build`, solucionando inmediatamente el error del manifiesto.
+Debe ver `200 OK` en la primera y `404 Not Found` en la segunda (además de las cabeceras HTTP).
 
 ---
 
-## Limpieza
+## 9. Solución de problemas frecuentes
 
-Para restaurar el entorno del laboratorio y preparar la entrega o desarrollo del siguiente módulo:
+### Problema A — Composer no puede instalar Laravel 13
 
-1. Detenga el servidor de desarrollo de Laravel y el de Vite utilizando la combinación de teclas en su consola:
-   ```bash
-   # Presione en las terminales activas
-   Ctrl + C
-   ```
+**Síntoma:** conflicto de versión de PHP o falta de extensiones.
 
-2. Ejecute la tarea de limpieza del caché de Laravel para eliminar configuraciones temporales:
-   ```bash
-   php artisan config:clear
-   php artisan route:clear
-   php artisan view:clear
-   ```
+**Acciones:**
 
-3. Revise que no existan cambios sin guardar en su repositorio de Git, y confirme sus progresos con un commit descriptivo sobre la rama local:
-   ```bash
-   git add .
-   git commit -m "feat: inicializacion de TaskFlow con Laravel 13, Vite 6, Tailwind CSS 4, layout maestro y suite de pruebas iniciales"
-   ```
+```bash
+php -v
+php -m
+composer diagnose
+```
+
+Confirme PHP 8.3+ y corrija las extensiones que Composer indique. No cambie arbitrariamente a Laravel 11 o 12: el curso utiliza Laravel 13.
+
+### Problema B — `npm install` muestra un error `EBADENGINE`
+
+**Causa probable:** Node.js no satisface los requisitos de la versión de Vite instalada.
+
+```bash
+node -v
+npm -v
+npm ls vite --depth=0
+```
+
+Utilice Node.js 24 LTS. Después, desde el proyecto, vuelva a ejecutar `npm install`. No fuerce Vite 6 como solución.
+
+### Problema C — `Vite manifest not found`
+
+**Causa habitual:** Laravel intenta cargar assets sin que Vite esté activo ni exista una compilación estática.
+
+**Soluciones alternativas:**
+
+```bash
+# Desarrollo: ejecute en otra terminal
+npm run dev
+
+# O genere archivos estáticos
+npm run build
+```
+
+En pruebas automatizadas, la clase `TareaViewTest` ya utiliza `$this->withoutVite()`.
+
+### Problema D — `View [tareas.index] not found`
+
+Revise las carpetas y nombres exactos:
+
+```bash
+ls resources/views/tareas
+ls resources/views/layouts
+```
+
+Deben existir `index.blade.php`, `show.blade.php` y `app.blade.php`. Linux diferencia mayúsculas y minúsculas.
+
+### Problema E — `Route [tareas.show] not defined`
+
+```bash
+php artisan route:list --path=tareas
+php artisan route:clear
+```
+
+Compruebe que la ruta del detalle termine en `->name('tareas.show')`. No use rutas antiguas `tasks.show` del laboratorio original.
+
+### Problema F — El componente `<x-tarjeta-tarea>` falla
+
+```bash
+ls app/View/Components/TarjetaTarea.php
+ls resources/views/components/tarjeta-tarea.blade.php
+php -l app/View/Components/TarjetaTarea.php
+php artisan view:clear
+```
+
+Verifique que la clase se llame `TarjetaTarea`, su método sea `colorEstado()` y la etiqueta Blade sea `<x-tarjeta-tarea>`.
+
+### Problema G — `No application encryption key has been specified`
+
+```bash
+php artisan key:generate
+php artisan config:clear
+```
+
+No escriba una clave ficticia en `.env`.
+
+### Problema H — La interfaz aparece sin estilos
+
+Verifique que `vite.config.js` importa `@tailwindcss/vite`, que `resources/css/app.css` contiene `@import "tailwindcss";` y que el layout incluye `@vite(['resources/css/app.css', 'resources/js/app.js'])`.
+
+```bash
+npm run build
+php artisan view:clear
+```
+
+Si utiliza `npm run dev`, manténgalo activo mientras navega por la aplicación.
 
 ---
 
-## Resumen
+## 10. Evidencias y cierre del laboratorio
 
-En este laboratorio, hemos alcanzado hitos críticos para el desarrollo de la aplicación full-stack **TaskFlow**:
+### Paso 7.1 — Preparar las evidencias
 
-1. **Estructuración del Backend**: Inicializamos un proyecto limpio basado en **Laravel 13.0.0** y **PHP 8.5.0**, configurando sus parámetros de variables de entorno y base de datos para alinearlo con las necesidades del curso.
-2. **Pipelines de Frontend Modernos**: Integramos las herramientas más vanguardistas del desarrollo web moderno, implementando **Vite 6.0.5** junto con la revolucionaria especificación de **Tailwind CSS 4.0.0**, eliminando configuraciones complejas de Javascript para agilizar la compilación de estilos mediante plugins de entorno nativos.
-3. **Mapeo MVC y Blade**: Implementamos un controlador `TaskViewController` que transfiere colecciones de datos simuladas a vistas compuestas mediante un layout base de Blade, optimizando la modularidad a través de componentes autocontenidos y parametrizables como tarjetas (`task-card`) y botones (`button`).
-4. **Validaciones de Seguridad y Robustez**: Validamos el flujo de ejecución mediante pruebas automatizadas que aseguran que el motor de renderizado escape de forma nativa amenazas de inyección de código tipo Cross-Site Scripting (XSS), consolidando las bases de seguridad del proyecto.
+El alumno entregará o mostrará al instructor:
 
-### Recursos Adicionales Recomendados
-- [Documentación Oficial de Laravel 13.x](https://laravel.com/docs/11.x) *(o de la versión estable de su ciclo en laravel.com)*
-- [Guía de Migración y Características de Tailwind CSS v4](https://tailwindcss.com/docs/v4-beta)
-- [Documentación de Integración de Vite en Laravel](https://laravel.com/docs/vite)
+1. Captura de `php artisan --version` con Laravel 13.x.
+2. Captura de `php artisan route:list --path=tareas`.
+3. Captura del listado de TaskFlow con **dos tarjetas y la alerta**.
+4. Captura del detalle de la tarea `/tareas/1`.
+5. Captura de la salida de `php artisan test --filter=TareaViewTest` con **cinco pruebas aprobadas**.
+6. Captura del resultado correcto de `npm run build`.
+7. Evidencia de la rama y el commit de Git.
+
+> Las capturas son evidencias de trabajo del alumno: **no hay que generarlas como archivos dentro del proyecto**. Utilice el mecanismo de entrega que indique el instructor.
+
+### Paso 7.2 — Verificar y guardar en Git
+
+Detenga `php artisan serve` y `npm run dev` con `Ctrl + C` cuando haya terminado de probar. Regrese a la raíz del proyecto y ejecute:
+
+```bash
+git status --short
+git check-ignore .env
+git check-ignore node_modules
+```
+
+Si los archivos sensibles están correctamente ignorados:
+
+```bash
+git add .
+git commit -m "lab01: fundamentos TaskFlow con Laravel Blade y Tailwind"
+git log -1 --oneline
+```
+
+> Si Git solicita nombre o correo del autor, configure la identidad siguiendo la política de su institución y repita el commit. No agregue `.env`, `vendor/` ni `node_modules/` al control de versiones.
+
+**No borre la carpeta `taskflow` ni sus archivos.** Este mismo proyecto será el punto de partida del laboratorio 2, donde las tareas dejarán de ser arreglos y pasarán a modelos Eloquent con MySQL.
+
+### Lista de comprobación final
+
+- [ ] Laravel 13 ejecuta TaskFlow correctamente.
+- [ ] El controlador `TareaController` tiene `index()` y `show()`.
+- [ ] Existen las rutas `tareas.index` y `tareas.show`.
+- [ ] El listado y el detalle muestran las tareas correctas.
+- [ ] La vista usa componentes `<x-tarjeta-tarea>` y `<x-alerta>`.
+- [ ] Tailwind CSS 4 se compila con Vite.
+- [ ] Los cinco tests de `TareaViewTest` pasan.
+- [ ] Los archivos están respaldados con un commit Git.
+- [ ] No se utilizaron MySQL, servicios de IA ni datos persistentes.
+
+---
+
+## 11. Qué se construirá en el laboratorio 2
+
+En el capítulo 2 se **continuará este mismo proyecto**, sin instalar otro Laravel:
+
+- Se configurará MySQL y se comprobará la conexión.
+- Se crearán las tablas `tareas` y `categorias` mediante migraciones.
+- Se añadirá el modelo Eloquent `Tarea` y se reemplazará el arreglo `TAREAS` del controlador.
+- Se conservarán las rutas, vistas y componentes que ya funcionan.
+- Se agregarán las operaciones crear, actualizar y eliminar, junto con validación, paginación y ordenamiento.
+
+**No realice todavía estos cambios.** Forman parte de la siguiente práctica.
+
+## 12. Fuentes para consulta
+
+**Materiales del curso**
+
+- Presentación corregida: capítulo 1, secciones 1.1–1.7 (diapositivas 10–81 de la versión aprobada).
+- [Laboratorio original del repositorio DESAPP_AVZ](https://github.com/Netec-Mx/DESAPP_AVZ/blob/main/Capitulo01/README.md). Esta guía Markdown lo adapta para coincidir con la presentación corregida; no debe mezclarse su nomenclatura `tasks.*` con la nomenclatura `tareas.*` de esta versión.
+
+**Documentación técnica oficial**
+
+- [Laravel 13 — Instalación](https://laravel.com/docs/13.x/installation)
+- [Laravel 13 — Rutas](https://laravel.com/docs/13.x/routing)
+- [Laravel 13 — Blade](https://laravel.com/docs/13.x/blade)
+- [Laravel 13 — Vite](https://laravel.com/docs/13.x/vite)
+- [Laravel 13 — Pruebas HTTP](https://laravel.com/docs/13.x/http-tests)
+- [Tailwind CSS 4 con Laravel y Vite](https://tailwindcss.com/docs/installation/framework-guides/laravel/vite)
+
+---
+
+**Fin del laboratorio 01.** El alumno debe conservar su aplicación y su rama Git para la continuidad de TaskFlow en el laboratorio 02.
