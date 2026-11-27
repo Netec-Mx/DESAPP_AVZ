@@ -283,17 +283,17 @@ Operaciones marca cada punto después de probar con la cuenta real del alumno. S
 
 - Laravel 13: https://laravel.com/docs/13.x/deployment
 
-- PHP Windows: https://windows.php.net/download/ | Composer: https://getcomposer.org/download/
+- PHP Windows: https://windows.php.net/download/ \| Composer: https://getcomposer.org/download/
 
-- Herd: https://herd.laravel.com/windows | Node: https://nodejs.org/en/download
+- Herd: https://herd.laravel.com/windows \| Node: https://nodejs.org/en/download
 
 - MySQL: https://dev.mysql.com/downloads/mysql/8.4.html
 
 - MySQL Windows: https://dev.mysql.com/doc/refman/8.4/en/windows-installation.html
 
-- Git: https://git-scm.com/downloads | VS Code: https://code.visualstudio.com/download
+- Git: https://git-scm.com/downloads \| VS Code: https://code.visualstudio.com/download
 
-- Bruno: https://www.usebruno.com/downloads | Chrome: https://www.google.com/chrome/
+- Bruno: https://www.usebruno.com/downloads \| Chrome: https://www.google.com/chrome/
 
 - Docker Windows: https://docs.docker.com/desktop/setup/install/windows-install/
 
